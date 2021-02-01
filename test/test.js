@@ -37,6 +37,18 @@ describe('cron-builder', function () {
         expect(cron.build()).to.equal('* 5 * * *');
     });
 
+    it('sets a weekday abbreviated value', function() {
+        cron = new cb();
+        expect(cron.set('dayOfTheWeek', ['Sun'])).to.equal('Sun');
+        expect(cron.build()).to.equal('* * * * Sun');
+    })
+
+    it('sets a month abbreviated value', function() {
+        cron = new cb();
+        expect(cron.set('month', ['Dec'])).to.equal('Dec');
+        expect(cron.build()).to.equal('* * * Dec *');
+    })
+
     it('sets multiple values at once', function () {
         cron = new cb();
         expect(cron.set('minute', ['0', '10', '20', '30', '40', '50'])).to.equal('0,10,20,30,40,50');

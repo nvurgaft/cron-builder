@@ -1,5 +1,8 @@
 var DEFAULT_INTERVAL = ['*'];
 
+var month_abbreviations = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+var weekday_abbreviations = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
 var CronValidator = (function() {
     /**
      * Contains the position-to-name mapping of the cron expression
@@ -63,6 +66,18 @@ var CronValidator = (function() {
         }
     },
 
+    isString = function(str) {
+        return Object.prototype.toString.call(str) === "[object String]";
+    },
+
+    stringEqualIgnoreCase = function(str1, str2) {
+        if (!isString(str1) || !isString(str2)) {
+            return false;
+        }
+
+        return str1.trim().toLowerCase() === str2.trim().toLowerCase();
+    },
+
     /**
      * validates any given measureOfTime and corresponding value
      * @param {!String} measureOfTime - as expected
@@ -86,7 +101,20 @@ var CronValidator = (function() {
         }
 
         if (!validChars.test(value)) {
-            throw new Error('Invalid value; Only numbers 0-9, "-", and "*" chars are allowed');
+            // month_abbreviations
+            if ( stringEqualIgnoreCase(measureOfTime, 'dayOfTheWeek') ) {
+                let weekday = weekday_abbreviations.find((day) => day === value);
+                if (weekday === undefined) {
+                    throw new Error('Invalid value; Only week day abbreviation such as Sun, Mon, Tue, etc.. are allowed');
+                }
+            } else if ( stringEqualIgnoreCase(measureOfTime, 'month') ) {
+                let month = month_abbreviations.find((mon) => mon === value);
+                if (month === undefined) {
+                    throw new Error('Invalid value; Only month abbreviation such as Jan, Feb, Match, etc.. are allowed');
+                }
+            } else {
+                throw new Error('Invalid value; Only numbers 0-9, "-", and "*" chars are allowed');
+            }
         }
 
         if (value !== '*') {
