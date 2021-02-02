@@ -41,13 +41,24 @@ describe('cron-builder', function () {
         cron = new cb();
         expect(cron.set('dayOfTheWeek', ['Sun'])).to.equal('Sun');
         expect(cron.build()).to.equal('* * * * Sun');
-    })
+    });
 
     it('sets a month abbreviated value', function() {
         cron = new cb();
         expect(cron.set('month', ['Dec'])).to.equal('Dec');
         expect(cron.build()).to.equal('* * * Dec *');
+    });
+
+    it('accepts / value', function() {
+        cron = new cb();
+        expect(cron.set('minute', ['*/15'])).to.equal('*/15');
+        expect(cron.build()).to.equal('*/15 * * * *');
     })
+
+    it('fails when raw characters are inside the value', function () {
+        cron = new cb();
+        expect(function () {cron.set(['*/asd15'], 'minute') }).to.throw(Error);
+    });
 
     it('sets multiple values at once', function () {
         cron = new cb();

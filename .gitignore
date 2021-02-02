@@ -2,4 +2,3 @@
 !/.gitignore
 !/.travis.yml
 node_modules
-main.js

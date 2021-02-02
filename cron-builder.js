@@ -66,6 +66,10 @@ var CronValidator = (function() {
         }
     },
 
+    isNumeric = function(val) {
+        return !isNaN(parseFloat(val)) && isFinite(val);
+    },
+
     isString = function(str) {
         return Object.prototype.toString.call(str) === "[object String]";
     },
@@ -94,27 +98,30 @@ var CronValidator = (function() {
                 dayOfTheWeek:  {min: 0, max: 7}
             },
             range,
-            validChars = /^[0-9*-]/;
+            // validChars = /^[0-9*-]/;
+            validChars = /^[0-9\,\*\/-]*$/;
 
         if (!validatorObj[measureOfTime]) {
             throw new Error('Invalid measureOfTime; Valid options are: ' + MeasureOfTimeValues.join(', '));
         }
 
-        if (!validChars.test(value)) {
-            // month_abbreviations
-            if ( stringEqualIgnoreCase(measureOfTime, 'dayOfTheWeek') ) {
-                let weekday = weekday_abbreviations.find((day) => day === value);
-                if (weekday === undefined) {
-                    throw new Error('Invalid value; Only week day abbreviation such as Sun, Mon, Tue, etc.. are allowed');
-                }
-            } else if ( stringEqualIgnoreCase(measureOfTime, 'month') ) {
-                let month = month_abbreviations.find((mon) => mon === value);
-                if (month === undefined) {
-                    throw new Error('Invalid value; Only month abbreviation such as Jan, Feb, Match, etc.. are allowed');
-                }
-            } else {
-                throw new Error('Invalid value; Only numbers 0-9, "-", and "*" chars are allowed');
+        if (stringEqualIgnoreCase(measureOfTime, 'dayOfTheWeek') && !isNumeric(value)) {
+            let weekday = weekday_abbreviations.find((day) => day === value);
+            if (weekday !== undefined) {
+                return;
+                // throw new Error('Invalid value; Only week day abbreviation such as Sun, Mon, Tue, etc.. are allowed');
             }
+        } else if (stringEqualIgnoreCase(measureOfTime, 'month') && !isNumeric(value)) {
+            let month = month_abbreviations.find((mon) => mon === value);
+            if (month !== undefined) {
+                return;
+                // throw new Error('Invalid value; Only month abbreviation such as Jan, Feb, Match, etc.. are allowed');
+            }
+        }
+
+        if (!validChars.test(value)) {
+            console.debug("value: ", value);
+            throw new Error('Invalid value; Only numbers 0-9, "-", and "*" chars are allowed');
         }
 
         if (value !== '*') {

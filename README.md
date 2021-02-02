@@ -74,9 +74,10 @@ cronExp.build();
 ```
 
 ##### Notes:
-- cron-builder does not currently support using `/` syntax to indicate values that are repeated. Instead of using `*/15`, use the verbose form `0,15,30,45`.
-- some validation can accept raw, invalid text, and should be corrected
+- ~~cron-builder does not currently support using `/` syntax to indicate values that are repeated. Instead of using `*/15`, use the verbose form `0,15,30,45`.~~
+- ~~some validation can accept raw, invalid text, and should be corrected~~
 - ~~cron-builder requires using numeric representations of days of the week and months of the year. So instead of using `Feb,Mar,Apr` just use `2,3,4`.~~
+- The above cases are supported to some extent, albeit a better regex validation is needed
 
 ### Contribute
 Easy!
